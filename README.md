@@ -35,7 +35,9 @@ arguments:
 --nInit: number of initial labeled samples
 --nStep: number of acquisition steps
 --nPool: number of samples for pooling set
+```
 
 The results will be saved in 'results/{dataset}_{network}/test_accs_{# rep}.txt'
 
-
+## Contact
+If there are any questions or concerns feel free to send a message at ipcng00@gmail.com
