@@ -15,3 +15,27 @@ The required Python3 packages can be installed using
 pip3 install -r requirements.txt
 ```
 
+### Running an experiment
+```
+python3 run_mnist.py
+```
+runs an active learning experiment on MNIST dataset with S-CNN network, querying batches of 20 samples according to the DRAL+ algorithm.
+
+```
+python3 run_cifar10.py
+```
+runs an active learning experiment on CIFAR10 dataset with K-CNN network, querying batches of 400 samples according to the DRAL+ algorithm.
+
+arguments:
+```
+--nBatch: batch size for training
+--nEpoch: number of epochs for training
+--nValid: number of samples for validation set
+--nQuery: number of queries at each step
+--nInit: number of initial labeled samples
+--nStep: number of acquisition steps
+--nPool: number of samples for pooling set
+
+The results will be saved in 'results/{dataset}_{network}/test_accs_{# rep}.txt'
+
+
