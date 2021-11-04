@@ -25,8 +25,7 @@ def set_index(nInit, nValid, y_train_raw, random_seed=0):
     n_classes = len(np.unique(y_train_raw))
     np.random.seed(random_seed)
     idx_shuffled = np.random.permutation(len(y_train_raw))
-    idx = [idx_shuffled[np.where(y_train_raw[idx_shuffled] == (i % n_classes))[0][i // n_classes]]
-           for i in range(nInit+nValid)]
+    idx = [idx_shuffled[np.where(y_train_raw[idx_shuffled] == (i % n_classes))[0][i // n_classes]] for i in range(nInit+nValid)]
     idx_labeled, idx_valid = np.array(idx[:nInit]), np.array(idx[nInit:])
     idx_unlabeled = np.setdiff1d(idx_shuffled, np.concatenate((idx_labeled, idx_valid)))
     np.random.shuffle(idx_labeled)
@@ -52,8 +51,7 @@ def get_model(network, input_shape, n_classes):
         opt = keras.optimizers.adam(lr=0.001, beta_1=0.9, beta_2=0.999)
     elif network.upper() in ['KCNN', 'K-CNN']:
         model = keras.models.Sequential([
-            keras.layers.Conv2D(32, (3, 3), padding='same', activation='relu', input_shape=input_shape,
-                                kernel_initializer='he_normal'),
+            keras.layers.Conv2D(32, (3, 3), padding='same', activation='relu', input_shape=input_shape, kernel_initializer='he_normal'),
             keras.layers.Conv2D(32, (3, 3), padding='same', activation='relu', kernel_initializer='he_normal'),
             keras.layers.MaxPool2D((2, 2)),
             keras.layers.Dropout(0.25),
@@ -79,14 +77,12 @@ def train_and_test_model(step, path, args, X_labeled, y_labeled, valid_set, X_te
     weights_best_file = f'{path}/weights_best.hdf5'
     if os.path.exists(weights_best_file): os.remove(weights_best_file)
     model = get_model(network, X_labeled.shape[1:], n_classes)
-    callback = [tf.keras.callbacks.ModelCheckpoint(filepath=weights_best_file, monitor='val_accuracy',
-                                                   save_best_only=True, verbose=1)]
+    callback = [tf.keras.callbacks.ModelCheckpoint(filepath=weights_best_file, monitor='val_accuracy', save_best_only=True, verbose=1)]
     print(f'Training.. step {step + 1:03d}/{nStep:03d}') if step < nStep else print(f'Training.. final step')
     model.fit(X_labeled, y_labeled, batch_size=nBatch, epochs=nEpoch, validation_data=valid_set, callbacks=callback)
     if os.path.exists(weights_best_file): model.load_weights(weights_best_file)
     acc = model.evaluate(X_test, y_test, verbose=0)[1]
-    print(f'Step {step + 1:03d}/{nStep:03d} - test acc: {acc:.5f}\n') if step < nStep \
-        else print(f'Final step - test acc: {acc:.5f}\n')
+    print(f'Step {step + 1:03d}/{nStep:03d} - test acc: {acc:.5f}\n') if step < nStep else print(f'Final step - test acc: {acc:.5f}\n')
     if os.path.exists(weights_best_file): os.remove(weights_best_file)
 
     return model, acc
@@ -97,8 +93,7 @@ def get_feature(model, X, feature=None):
     model_output = K.function([model.layers[0].input], model.layers[idx_layer - 1].output)
     idx_split = np.linspace(0, X.shape[0], 11).astype(int)
     for i in range(10):
-        feature = np.concatenate((feature, model_output(X[idx_split[i]:idx_split[i+1]]))) if feature is not None \
-            else model_output(X[idx_split[i]:idx_split[i+1]])
+        feature = np.concatenate((feature, model_output(X[idx_split[i]:idx_split[i+1]]))) if feature is not None else model_output(X[idx_split[i]:idx_split[i+1]])
     w_hat = model.layers[idx_layer].get_weights()
 
     return feature, w_hat
